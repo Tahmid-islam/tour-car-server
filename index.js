@@ -32,14 +32,6 @@ async function run() {
       res.send(services);
     });
 
-    //Delete API
-    app.delete("/cars/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const result = await servicesCollection.deleteOne(query);
-      res.json(result);
-    });
-
     //Get single service
     app.get("/cars/:id", async (req, res) => {
       const id = req.params.id;
@@ -77,6 +69,32 @@ async function run() {
         })
         .toArray();
       res.send(result);
+    });
+
+    // Update API
+    app.put("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          status: "Approved",
+        },
+      };
+      const result = await bookingCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.json(result);
+    });
+
+    //Delete API
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await bookingCollection.deleteOne(query);
+      res.json(result);
     });
   } finally {
     // await client.close();
