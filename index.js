@@ -40,7 +40,7 @@ async function run() {
       res.json(service);
     });
 
-    //Post API
+    //Post add a car API
     app.post("/cars", async (req, res) => {
       const services = req.body;
       const result = await servicesCollection.insertOne(services);
@@ -54,7 +54,7 @@ async function run() {
       res.json(result);
     });
 
-    //Get API
+    //Get bookings API
     app.get("/bookings", async (req, res) => {
       const cursor = bookingCollection.find({});
       const booking = await cursor.toArray();
