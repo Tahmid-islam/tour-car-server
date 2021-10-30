@@ -23,15 +23,16 @@ async function run() {
     await client.connect();
     const database = client.db("tourCar");
     const servicesCollection = database.collection("cars");
+    const bookingCollection = database.collection("bookings");
 
-    //GET API
+    //Get API
     app.get("/cars", async (req, res) => {
       const cursor = servicesCollection.find({});
       const services = await cursor.toArray();
       res.send(services);
     });
 
-    //DELETE API
+    //Delete API
     app.delete("/cars/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -39,7 +40,7 @@ async function run() {
       res.json(result);
     });
 
-    //GET SINGLE SERVICE
+    //Get single service
     app.get("/cars/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -47,11 +48,35 @@ async function run() {
       res.json(service);
     });
 
-    //POST API
+    //Post API
     app.post("/cars", async (req, res) => {
       const services = req.body;
       const result = await servicesCollection.insertOne(services);
       res.json(result);
+    });
+
+    // Add bookings API
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingCollection.insertOne(booking);
+      res.json(result);
+    });
+
+    //Get API
+    app.get("/bookings", async (req, res) => {
+      const cursor = bookingCollection.find({});
+      const booking = await cursor.toArray();
+      res.send(booking);
+    });
+
+    //Get Specific User Booking API
+    app.get("/myBookings/:email", async (req, res) => {
+      const result = await bookingCollection
+        .find({
+          email: req.params.email,
+        })
+        .toArray();
+      res.send(result);
     });
   } finally {
     // await client.close();
